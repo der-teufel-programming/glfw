@@ -52,7 +52,7 @@ pub fn build(b: *std.Build) void {
     if (target.result.isDarwin()) {
         // MacOS: this must be defined for macOS 13.3 and older.
         lib.defineCMacro("__kernel_ptr_semantics", "");
-        @import("xcode_frameworks").addPaths(lib);
+        @import("xcode_frameworks").addPaths(&lib.root_module);
     }
 
     const include_src_flag = "-Isrc";
@@ -154,11 +154,11 @@ pub fn link(b: *std.Build, step: *std.Build.Step.Compile) void {
     _ = b;
     _ = step;
 
-    @panic(".link(b, step) has been replaced by .addPaths(step)");
+    @panic(".link(b, step) has been replaced by .addPaths(&step.root_module)");
 }
 
-pub fn addPaths(step: *std.Build.Step.Compile) void {
-    @import("xcode_frameworks").addPaths(step);
+pub fn addPaths(module: *std.Build.Module) void {
+    @import("xcode_frameworks").addPaths(module);
 }
 
 const base_sources = [_][]const u8{
